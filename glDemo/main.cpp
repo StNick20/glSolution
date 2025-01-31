@@ -1,6 +1,7 @@
 
 #include "core.h"
-
+#include <thread>
+#include <chrono>
 
 // global variables
 
@@ -13,6 +14,11 @@ void renderScene();
 void resizeWindow(GLFWwindow* window, int width, int height);
 void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 void updateScene();
+void drawPolygon(int _x, int _y, int _sides, float _radius);
+float randomFloat();
+int randomSides();
+int randomPoint();
+float randomRadius();
 
 
 int main() {
@@ -20,7 +26,7 @@ int main() {
 	//
 	// 1. Initialisation
 	//
-	
+	srand(time(NULL));
 
 	// Initialise glfw and setup window
 	glfwInit();
@@ -58,6 +64,7 @@ int main() {
 	// Initialise scene - geometry and shaders etc
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // setup background colour to be black
 
+	gluOrtho2D(-5.00, 5.00, -5.00, 5.00);
 
 	//
 	// 2. Main loop
@@ -90,8 +97,43 @@ void renderScene()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render objects here...
+
+	/*glBegin(GL_TRIANGLES);
+		//triangle one
+		glVertex2f(-1.0f, -1.0f);
+		glVertex2f(1.0f, 1.0f);
+		glVertex2f(1.0f, -1.0f);
+
+		//triangle two
+		glVertex2f(-1.0f, 1.0f);
+		glVertex2f(1.0f, 1.0f);
+		glVertex2f(-1.0f, -1.0f);
+	glEnd();*/
+
+
+
+	drawPolygon(randomPoint(), randomPoint(), randomSides(), randomRadius());
 }
 
+float randomFloat()
+{
+	return (float)rand() / RAND_MAX;
+}
+
+int randomSides()
+{
+	return rand() % (50 - 3) + 3;
+}
+
+int randomPoint()
+{
+	return rand() % (5 + 5) - 5;
+}
+
+float randomRadius()
+{
+	return rand() % (4 - 1) + 1;
+}
 
 // Function to call when window resized
 void resizeWindow(GLFWwindow* window, int width, int height)
@@ -125,5 +167,25 @@ void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int 
 
 // Function called to animate elements in the scene
 void updateScene() {
+
 }
 
+void drawPolygon(int _x, int _y, int _sides, float radius)
+{
+
+	if (_sides > 2)
+	{
+		glColor3f(randomFloat(), randomFloat(), randomFloat());
+		glBegin(GL_POLYGON);
+		for (int i = 0; i < _sides; i++)
+		{
+			float angle = 2.0f * 3.14 * i / _sides;
+			float x = _x + radius * cos(angle);
+			float y = _y + radius * sin(angle);
+			glVertex2f(x, y);
+		}
+		glEnd();
+	}
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(250));
+}
