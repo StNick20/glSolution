@@ -1,13 +1,14 @@
 #include "core.h"
 #include "MyShapes.h"
-#include <thread>
-#include <chrono>
 
+using namespace std;
 // global variables
+mt19937 engine;
+uniform_real_distribution<float> range;
 
 // Window size
-const unsigned int initWidth = 512;
-const unsigned int initHeight = 512;
+const unsigned int initWidth = 1024;
+const unsigned int initHeight = 1024;
 
 // Function prototypes
 void renderScene();
@@ -18,7 +19,6 @@ void updateScene();
 //randoms
 float randomFloat();
 int randomSides();
-int randomPoint();
 float randomRadius();
 int randomShape();
 void randomFill();
@@ -70,6 +70,9 @@ int main() {
 
 	gluOrtho2D(-10.00, 10.00, -10.00, 10.00);
 
+	random_device rd;
+	engine = mt19937(rd());
+	range = uniform_real_distribution<float>(-10.0f, 10.0f);
 	//
 	// 2. Main loop
 	// 
@@ -116,20 +119,18 @@ void renderScene()
 
 	glColor3f(randomFloat(), randomFloat(), randomFloat());
 
-
-
-	switch (randomShape())
+	switch(randomShape())
 	{
 	case 1:
 		randomFill();
-		drawStar(randomPoint(), randomPoint());
+		drawStar(range(engine), range(engine));
 		break;
 	case 2:
 		randomFill();
-		drawPolygon(randomPoint(), randomPoint(), randomSides(), randomRadius());
+		drawPolygon(range(engine), range(engine), randomSides(), randomRadius());
 		break;
 	case 3:
-		drawTank(randomPoint(), randomPoint());
+		drawTank(range(engine), range(engine));
 		break;
 	case 4:
 		randomFill();
@@ -138,6 +139,9 @@ void renderScene()
 	case 5:
 		randomFill();
 		drawQuads();
+		break;
+	case 6:
+		spiral(range(engine), range(engine), (float)(rand() / RAND_MAX) * (0.1f - 0.01f) + 0.01f);
 		break;
 	default:
 		std::cout << "well this shouldn't be happening :(" << std::endl;
@@ -157,11 +161,6 @@ int randomSides()
 	return rand() % (50 - 3) + 3;
 }
 
-int randomPoint()
-{
-	return rand() % (10 + 10) - 10;
-}
-
 float randomRadius()
 {
 	return rand() % (4 - 1) + 1;
@@ -169,7 +168,7 @@ float randomRadius()
 
 int randomShape()
 {
-	return rand() % 5 + 1;
+	return rand() % 6 + 1;
 }
 
 void randomFill()

@@ -22,8 +22,7 @@ void drawStar(float _x, float _y)
 	glEnd();
 }
 
-
-void drawPolygon(float _x, float _y, int _sides, float _radius)
+void drawPolygon(float _x, float _y, int _sides, float radius)
 {
 
 	if (_sides > 2)
@@ -32,8 +31,8 @@ void drawPolygon(float _x, float _y, int _sides, float _radius)
 		for (int i = 0; i < _sides; i++)
 		{
 			float angle = 2.0f * 3.14 * i / _sides;
-			float x = _x + _radius * cos(angle);
-			float y = _y + _radius * sin(angle);
+			float x = _x + radius * cos(angle);
+			float y = _y + radius * sin(angle);
 			glVertex2f(x, y);
 		}
 		glEnd();
@@ -144,4 +143,30 @@ void drawSemiCircleStudio()
 	glVertex2f(7.5f, 0.0f);
 
 	glEnd();
+}
+
+void spiral(float _x, float _y, float angleStep)
+{
+	glBegin(GL_LINE_STRIP);
+
+	float x, y;
+	float angle = 0;
+	float radius = 0.1;
+
+	while (angle < 15 * 3.14)
+	{
+		x = _x + radius * cos(angle);
+		y = _y + radius * sin(angle);
+		glVertex2f(x, y);
+
+		angle += angleStep;
+		radius += 0.01;
+	}
+
+	glEnd();
+}
+
+void points(float x, float y, float pointSize)
+{
+
 }
