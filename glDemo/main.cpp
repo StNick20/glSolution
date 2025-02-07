@@ -1,5 +1,5 @@
-
 #include "core.h"
+#include "MyShapes.h"
 #include <thread>
 #include <chrono>
 
@@ -14,11 +14,15 @@ void renderScene();
 void resizeWindow(GLFWwindow* window, int width, int height);
 void keyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 void updateScene();
-void drawPolygon(int _x, int _y, int _sides, float _radius);
+
+//randoms
 float randomFloat();
 int randomSides();
 int randomPoint();
 float randomRadius();
+int randomShape();
+void randomFill();
+
 
 
 int main() {
@@ -64,7 +68,7 @@ int main() {
 	// Initialise scene - geometry and shaders etc
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // setup background colour to be black
 
-	gluOrtho2D(-5.00, 5.00, -5.00, 5.00);
+	gluOrtho2D(-10.00, 10.00, -10.00, 10.00);
 
 	//
 	// 2. Main loop
@@ -110,9 +114,37 @@ void renderScene()
 		glVertex2f(-1.0f, -1.0f);
 	glEnd();*/
 
+	glColor3f(randomFloat(), randomFloat(), randomFloat());
 
 
-	drawPolygon(randomPoint(), randomPoint(), randomSides(), randomRadius());
+
+	switch (randomShape())
+	{
+	case 1:
+		randomFill();
+		drawStar(randomPoint(), randomPoint());
+		break;
+	case 2:
+		randomFill();
+		drawPolygon(randomPoint(), randomPoint(), randomSides(), randomRadius());
+		break;
+	case 3:
+		drawTank(randomPoint(), randomPoint());
+		break;
+	case 4:
+		randomFill();
+		drawSemiCircleStudio();
+		break;
+	case 5:
+		randomFill();
+		drawQuads();
+		break;
+	default:
+		std::cout << "well this shouldn't be happening :(" << std::endl;
+		break;
+	}
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(250));
 }
 
 float randomFloat()
@@ -127,12 +159,25 @@ int randomSides()
 
 int randomPoint()
 {
-	return rand() % (5 + 5) - 5;
+	return rand() % (10 + 10) - 10;
 }
 
 float randomRadius()
 {
 	return rand() % (4 - 1) + 1;
+}
+
+int randomShape()
+{
+	return rand() % 5 + 1;
+}
+
+void randomFill()
+{
+	if (rand() % 2 > 0)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 // Function to call when window resized
@@ -170,23 +215,9 @@ void updateScene() {
 
 }
 
-void drawPolygon(int _x, int _y, int _sides, float radius)
-{
 
-	if (_sides > 2)
-	{
-		glColor3f(randomFloat(), randomFloat(), randomFloat());
-		glBegin(GL_POLYGON);
-		for (int i = 0; i < _sides; i++)
-		{
-			float angle = 2.0f * 3.14 * i / _sides;
-			float x = _x + radius * cos(angle);
-			float y = _y + radius * sin(angle);
-			glVertex2f(x, y);
-		}
-		glEnd();
-	}
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(250));
-}
+
+
+
 
