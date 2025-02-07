@@ -189,3 +189,4 @@ void drawPolygon(int _x, int _y, int _sides, float radius)
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(250));
 }
+
