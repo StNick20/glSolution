@@ -165,8 +165,3 @@ void spiral(float _x, float _y, float angleStep)
 
 	glEnd();
 }
-
-void points(float x, float y, float pointSize)
-{
-
-}

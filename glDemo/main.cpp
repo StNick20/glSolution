@@ -6,9 +6,11 @@ using namespace std;
 mt19937 engine;
 uniform_real_distribution<float> range;
 
+vector<glm::vec2> vertexCoords;
+
 // Window size
-const unsigned int initWidth = 1024;
-const unsigned int initHeight = 1024;
+const unsigned int initWidth = 512;
+const unsigned int initHeight = 512;
 
 // Function prototypes
 void renderScene();
@@ -20,7 +22,7 @@ void updateScene();
 float randomFloat();
 int randomSides();
 float randomRadius();
-int randomShape();
+void randomShape();
 void randomFill();
 
 
@@ -72,7 +74,17 @@ int main() {
 
 	random_device rd;
 	engine = mt19937(rd());
-	range = uniform_real_distribution<float>(-10.0f, 10.0f);
+	range = uniform_real_distribution<float>(-1.0f, 1.0f);
+
+	vertexCoords = vector<glm::vec2>(100, glm::vec2(0.0, 0.0f));
+
+	for (int i = 0; i < 100; i++)
+	{
+		float x = range(engine);
+		float y = range(engine);
+
+		vertexCoords[i] = glm::vec2(x, y);
+	}
 	//
 	// 2. Main loop
 	// 
@@ -104,22 +116,38 @@ void renderScene()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Render objects here...
+	glPointSize(5.0f);
+	glColor3ub(0, 180, 0);
 
-	/*glBegin(GL_TRIANGLES);
-		//triangle one
-		glVertex2f(-1.0f, -1.0f);
-		glVertex2f(1.0f, 1.0f);
-		glVertex2f(1.0f, -1.0f);
+	glBegin(GL_POINTS);
+	for (int i = 0; i < 100; i++)
+	{
+		glVertex2f(vertexCoords[i].x, vertexCoords[i].y);
+	}
+	glEnd;
+}
 
-		//triangle two
-		glVertex2f(-1.0f, 1.0f);
-		glVertex2f(1.0f, 1.0f);
-		glVertex2f(-1.0f, -1.0f);
-	glEnd();*/
+float randomFloat()
+{
+	return (float)rand() / RAND_MAX;
+}
+
+int randomSides()
+{
+	return rand() % (50 - 3) + 3;
+}
+
+float randomRadius()
+{
+	return rand() % (4 - 1) + 1;
+}
+
+void randomShape()
+{
 
 	glColor3f(randomFloat(), randomFloat(), randomFloat());
 
-	switch(randomShape())
+	switch (rand() % 6 + 1)
 	{
 	case 1:
 		randomFill();
@@ -146,29 +174,9 @@ void renderScene()
 	default:
 		std::cout << "well this shouldn't be happening :(" << std::endl;
 		break;
-	}
+	};
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(250));
-}
-
-float randomFloat()
-{
-	return (float)rand() / RAND_MAX;
-}
-
-int randomSides()
-{
-	return rand() % (50 - 3) + 3;
-}
-
-float randomRadius()
-{
-	return rand() % (4 - 1) + 1;
-}
-
-int randomShape()
-{
-	return rand() % 6 + 1;
 }
 
 void randomFill()

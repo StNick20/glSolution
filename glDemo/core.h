@@ -11,6 +11,8 @@
 #include "GL/glew.h" 
 #include "GLFW/glfw3.h"
 
+#include "glm\vec2.hpp"
+
 #include <Windows.h>
 #include <stdio.h>
 #include <assert.h>
@@ -19,4 +21,5 @@
 #include <random>
 #include <thread>
 #include <chrono>
+#include <vector>
 
