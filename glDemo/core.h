@@ -12,6 +12,7 @@
 #include "GLFW/glfw3.h"
 
 #include "glm\vec2.hpp"
+#include "glm\vec4.hpp"
 
 #include <Windows.h>
 #include <stdio.h>

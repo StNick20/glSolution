@@ -4,13 +4,20 @@
 using namespace std;
 // global variables
 mt19937 engine;
-uniform_real_distribution<float> range;
+uniform_real_distribution<float> pointPositionRandom;
+uniform_real_distribution<float> pointSizeRandom;
+uniform_real_distribution<float> pointColourRandom;
 
 vector<glm::vec2> vertexCoords;
+vector<float> pointSize;
+vector<glm::vec4> pointColour;
+
 
 // Window size
 const unsigned int initWidth = 512;
 const unsigned int initHeight = 512;
+
+const int pointAmount = 1000;
 
 // Function prototypes
 void renderScene();
@@ -74,16 +81,28 @@ int main() {
 
 	random_device rd;
 	engine = mt19937(rd());
-	range = uniform_real_distribution<float>(-1.0f, 1.0f);
+	pointPositionRandom = uniform_real_distribution<float>(-10.0f, 10.0f);
+	pointColourRandom = uniform_real_distribution<float>(0.0f, 1.0f);
+	pointSizeRandom = uniform_real_distribution<float>(1.0f, 5.0f);
 
-	vertexCoords = vector<glm::vec2>(100, glm::vec2(0.0, 0.0f));
+	vertexCoords = vector<glm::vec2>(pointAmount, glm::vec2(0.0, 0.0f));
+	pointSize = vector<float>(pointAmount, 0.0f);
+	pointColour = vector<glm::vec4>(pointAmount, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < pointAmount; i++)
 	{
-		float x = range(engine);
-		float y = range(engine);
+		float x = pointPositionRandom(engine);
+		float y = pointPositionRandom(engine);
 
 		vertexCoords[i] = glm::vec2(x, y);
+
+		float s = pointSizeRandom(engine);
+		pointSize[i] = s;
+
+		float r = pointColourRandom(engine) * 255;
+		float g = pointColourRandom(engine) * 255;
+		float b = pointColourRandom(engine) * 255;
+		pointColour[i] = glm::vec4(r, g, b, 255.0f);
 	}
 	//
 	// 2. Main loop
@@ -115,16 +134,20 @@ void renderScene()
 	// Clear the rendering window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Render objects here...
-	glPointSize(5.0f);
-	glColor3ub(0, 180, 0);
 
-	glBegin(GL_POINTS);
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < pointAmount; i++)
 	{
+		glPointSize(pointSize[i]);
+		// Render objects here...
+		glColor3ub(pointColour[i].r, pointColour[i].g, pointColour[i].b);
+
+		glBegin(GL_POINTS);
+
 		glVertex2f(vertexCoords[i].x, vertexCoords[i].y);
+
+		glEnd();
 	}
-	glEnd;
+	//randomShape();
 }
 
 float randomFloat()
@@ -151,14 +174,14 @@ void randomShape()
 	{
 	case 1:
 		randomFill();
-		drawStar(range(engine), range(engine));
+		drawStar(pointPositionRandom(engine), pointPositionRandom(engine));
 		break;
 	case 2:
 		randomFill();
-		drawPolygon(range(engine), range(engine), randomSides(), randomRadius());
+		drawPolygon(pointPositionRandom(engine), pointPositionRandom(engine), randomSides(), randomRadius());
 		break;
 	case 3:
-		drawTank(range(engine), range(engine));
+		drawTank(pointPositionRandom(engine), pointPositionRandom(engine));
 		break;
 	case 4:
 		randomFill();
@@ -169,7 +192,7 @@ void randomShape()
 		drawQuads();
 		break;
 	case 6:
-		spiral(range(engine), range(engine), (float)(rand() / RAND_MAX) * (0.1f - 0.01f) + 0.01f);
+		spiral(pointPositionRandom(engine), pointPositionRandom(engine), (float)(rand() / RAND_MAX) * (0.1f - 0.01f) + 0.01f);
 		break;
 	default:
 		std::cout << "well this shouldn't be happening :(" << std::endl;
